@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="root" style="min-height: 110px; min-width: 300px; padding-left: 0; padding-right: 0; padding-top: 5px; padding-bottom: 5px;">
+        <ui:VisualElement name="exportGroup" style="flex-direction: row; flex-shrink: 0;">
+            <ui:TextField label="Export Path" name="path" value="./AssetBundles" style="flex-grow: 1; min-height: initial;" />
+            <ui:Button text="..." display-tooltip-when-elided="true" name="pathButton" style="flex-direction: column; -unity-text-align: middle-center; flex-shrink: 0;" />
+        </ui:VisualElement>
+        <ui:GroupBox text="&lt;b&gt;Options&lt;/b&gt;" name="optionsGroup">
+            <ui:DropdownField label="Compression" index="1" choices="Uncompressed,Chunked,Compressed" name="optCompression" />
+            <ui:Toggle label="Deterministic" value="false" name="optDeterministic" tooltip="Store assets by Hash instead of their Name." />
+        </ui:GroupBox>
+        <ui:Button text="Export" display-tooltip-when-elided="true" name="export" />
+    </ui:VisualElement>
+</ui:UXML>

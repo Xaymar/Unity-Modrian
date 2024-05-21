@@ -1,0 +1,10 @@
+{
+	"name": "com.xaymar.guardian",
+	"displayName": "Guardian",
+	"version": "0.0.0",
+	"author": "Michael Fabian 'Xaymar' Dirks <info@xaymar.com>",
+	"changelogUrl": "https://github.com/Xaymar/UnityGuardian/commits/root/",
+	"documentationUrl": "https://github.com/Xaymar/UnityGuardian/wiki/",
+	"license": "BSD-3-Clause",
+	"licensesUrl": "https://github.com/Xaymar/UnityGuardian/blob/root/LICENSE.adoc"
+}

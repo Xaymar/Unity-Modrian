@@ -1,0 +1,21 @@
+== What is Guardian?
+Guardian is a Unity package that adds common Unity modding functionality. The end goal of Guardian is to cover the necessary basics for modding Unity games using available APIs.
+
+=== Bundler
+Bundler provides a simple way to generate AssetBundles to be imported by your code plugin later on. Bundler uses Unitys built-in AssetBundle markers that you'll find on every asset in the bottom right corner of the property view. The default extension used is `.assetBundle`, 
+
+== Usage
+=== Installing
+1. Open your Unity project.
+2. In the Menu bar, click Window, then click Package Manager.
+3. Click the + Symbol, then select *Add package from git URL*.
+4. Paste `https://github.com/Xaymar/UnityGuardian.git` into the field.
+5. Click Add and it should automatically happen.
+
+=== Bundler
+The Bundler feature is available in the menu under *Guardian* -> *Bundler*, which will open a new window.
+
+== FAQ / Q&A
+=== Why make this?
+Existing tools tend to be designed for a specific Game, rather than being generic enough for all games. Some tools even enforce weird directory or content restrictions for absolutely no reason. So in order to fix the problem for myself, I simply made my own tool entirely, which should work with any game.
+
