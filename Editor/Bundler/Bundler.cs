@@ -91,7 +91,7 @@ public class Bundler : EditorWindow
         {
             Debug.Log(string.Format("Indexing bundle {0}", bundle));
             var ab = new AssetBundleBuild();
-            ab.assetBundleName = bundle;
+            ab.assetBundleName = string.Format("{0}{1}", bundle, ".assetBundle");
             ab.assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(bundle);
             definitions.Add(ab);
         }
@@ -122,7 +122,6 @@ public class Bundler : EditorWindow
         BuildPipeline.BuildAssetBundles(
             fullPath, definitions.ToArray(), opts, BuildTarget.StandaloneWindows);
     }
-
 
     [MenuItem("Guardian/Bundler")]
     public static void onMenuGuardianBundler()
