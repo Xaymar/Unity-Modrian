@@ -65,7 +65,7 @@ namespace com.Xaymar.Guardian {
 			_optDeterministic.RegisterCallback<ChangeEvent<bool>>(optDeterministicChanged);
 
 			// Reload stored options.
-			_pathElement.value = EditorPrefs.GetString(KeyExportPath, Path.GetRelativePath(Application.dataPath, "BepInEx/Plugins/${bundleName}"));
+			_pathElement.value = EditorPrefs.GetString(KeyExportPath, Path.GetRelativePath(Application.dataPath, "BepInEx/Plugins/${bundleName}/${bundleName}.assetBundle"));
 			_optCompression.value = EditorPrefs.GetString(KeyCompression, _optCompression.value);
 			_optDeterministic.value = EditorPrefs.GetBool(KeyDeterministic, _optDeterministic.value);
 		}
@@ -109,18 +109,13 @@ namespace com.Xaymar.Guardian {
 			{
 				Debug.Log(string.Format("Indexing bundle {0}", bundle));
 				var ab = new AssetBundleBuild();
-				ab.assetBundleName = string.Format("{0}{1}", bundle, ".assetBundle");
+				ab.assetBundleName = $"{_pathElement.value.Replace("${bundleName}", bundle)}";
 				ab.assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(bundle);
 				definitions.Add(ab);
 			}
 
 			// Build the asset bundles.
 			Debug.Log("Building Asset Bundles...");
-			var fullPath = Path.GetFullPath(_pathElement.value, Application.dataPath);
-			if (!System.IO.Directory.Exists(fullPath))
-			{
-				System.IO.Directory.CreateDirectory(fullPath);
-			}
 
 			BuildAssetBundleOptions opts = BuildAssetBundleOptions.AssetBundleStripUnityVersion;
 			switch (_optCompression.value)
@@ -138,7 +133,7 @@ namespace com.Xaymar.Guardian {
 				opts |= BuildAssetBundleOptions.DeterministicAssetBundle;
 
 			BuildPipeline.BuildAssetBundles(
-				fullPath, definitions.ToArray(), opts, BuildTarget.StandaloneWindows);
+				Application.dataPath, definitions.ToArray(), opts, BuildTarget.StandaloneWindows);
 		}
 
 		[MenuItem("Guardian/Bundler")]
