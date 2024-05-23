@@ -1,146 +1,200 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-namespace com.Xaymar.Guardian {
-	public class Bundler : EditorWindow
-	{
-		const string KeyExportPath = "com.Xaymar.Guardian.Bundler.Path";
-		const string KeyCompression = "com.Xaymar.Guardian.Bundler.Compression";
-		const string KeyDeterministic = "com.Xaymar.Guardian.Bundler.Deterministic";
+namespace com.Xaymar.Guardian
+{
+    public class Bundler
+    {
+        public const string KeyExportPath = "com.Xaymar.Guardian.Bundler.Path";
+        public const string KeyCompression = "com.Xaymar.Guardian.Bundler.Compression";
+        public const string KeyDeterministic = "com.Xaymar.Guardian.Bundler.Deterministic";
 
-		string _pathToSelf;
-		string _pathToUI;
+        public static string getExportPath()
+        {
 
-		TextField _pathElement;
-		Button _pathButtonElement;
-		Button _exportButtonElement;
-		DropdownField _optCompression;
-		Toggle _optDeterministic;
+            {
+                string cmd = null;
+                var args = System.Environment.GetCommandLineArgs();
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i].ToLower() == $"-{KeyExportPath}")
+                    {
+                        if ((i + 1) < args.Length)
+                        {
+                            cmd = args[i + 1]; break;
+                        }
+                        else
+                        {
+                            Debug.LogError("Ignoring invalid command line option.");
+                            break;
+                        }
+                    }
+                }
 
-		string[] _assetBundles;
+                if (!string.IsNullOrEmpty(cmd))
+                {
+                    return cmd;
+                }
+            }
 
-		public Bundler()
-		{
-		}
+            {
+                string env = Environment.GetEnvironmentVariable(KeyExportPath);
 
-		public void OnEnable()
-		{
-			_pathToSelf = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(this));
-			_pathToUI = Path.Combine(Path.GetDirectoryName(_pathToSelf), "Bundler.uxml");
-			rootVisualElement.RegisterCallback<GeometryChangedEvent>(geometryChanged);
-		}
+                if (!string.IsNullOrEmpty(env))
+                {
+                    return env;
+                }
+            }
 
-		public void CreateGUI()
-		{
-			var root = rootVisualElement;
+            {
+                string ep = EditorPrefs.GetString(KeyExportPath);
 
-			// Load the necessary UI elements.
-			var uiAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(_pathToUI);
-			if (!uiAsset)
-			{
-				Debug.Log(string.Format("Failed to load '{0}', how did this happen?", _pathToUI));
-				throw new System.IO.FileNotFoundException(_pathToUI);
-			}
+                if (!string.IsNullOrEmpty(ep))
+                {
+                    return ep;
+                }
+            }
 
-			// Instantiate them for our usage.
-			var ui = uiAsset.Instantiate();
-			root.Add(ui);
+            return "../BepInEx/Plugins/${bundleName}/${bundleName}.assetBundle";
+        }
 
-			// Bind them to the necessary functionality.
-			_pathElement = root.Query<TextField>("path");
-			_pathElement.RegisterCallback<ChangeEvent<string>>(pathChanged);
-			_pathButtonElement = root.Query<Button>("pathButton");
-			_pathButtonElement.clicked += pathButtonClicked;
-			_exportButtonElement = root.Query<Button>("export");
-			_exportButtonElement.clicked += exportButtonClicked;
-			_optCompression = root.Query<DropdownField>("optCompression");
-			_optCompression.RegisterCallback<ChangeEvent<string>>(optCompressionChanged);
-			_optDeterministic = root.Query<Toggle>("optDeterministic");
-			_optDeterministic.RegisterCallback<ChangeEvent<bool>>(optDeterministicChanged);
+        public static string getCompressionType()
+        {
+            {
+                string cmd = null;
+                var args = System.Environment.GetCommandLineArgs();
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i].ToLower() == $"-{KeyCompression}")
+                    {
+                        if ((i + 1) < args.Length)
+                        {
+                            cmd = args[i + 1]; break;
+                        }
+                        else
+                        {
+                            Debug.LogError("Ignoring invalid command line option.");
+                            break;
+                        }
+                    }
+                }
 
-			// Reload stored options.
-			_pathElement.value = EditorPrefs.GetString(KeyExportPath, Path.GetRelativePath(Application.dataPath, "BepInEx/Plugins/${bundleName}/${bundleName}.assetBundle"));
-			_optCompression.value = EditorPrefs.GetString(KeyCompression, _optCompression.value);
-			_optDeterministic.value = EditorPrefs.GetBool(KeyDeterministic, _optDeterministic.value);
-		}
+                if (!string.IsNullOrEmpty(cmd))
+                {
+                    return cmd;
+                }
+            }
 
-		private void geometryChanged(GeometryChangedEvent evt)
-		{
-			var tgt = rootVisualElement.Q<VisualElement>("root");
+            {
+                string env = Environment.GetEnvironmentVariable(KeyCompression);
 
-			// Set up minimum size.
-			minSize = new Vector2(tgt.resolvedStyle.minWidth.value, tgt.resolvedStyle.minHeight.value);
-		} 
+                if (!string.IsNullOrEmpty(env))
+                {
+                    return env;
+                }
+            }
 
-		private void pathChanged(ChangeEvent<string> evt) {
-			EditorPrefs.SetString(KeyExportPath, evt.newValue);
-		}
+            {
+                string ep = EditorPrefs.GetString(KeyCompression);
 
-		private void pathButtonClicked()
-		{ 
-			var path = EditorUtility.OpenFolderPanel("Select Directory", _pathElement.value, "");
-			if (path != null)
-			{
-				_pathElement.value = Path.GetRelativePath(Application.dataPath, path);
-			}
-		}
+                if (!string.IsNullOrEmpty(ep))
+                {
+                    return ep;
+                }
+            }
 
-		private void optCompressionChanged(ChangeEvent<string> evt) {
-			EditorPrefs.SetString(KeyCompression, evt.newValue);
-		}
+            return "Chunked";
 
-		private void optDeterministicChanged(ChangeEvent<bool> evt) {
-			EditorPrefs.SetBool(KeyDeterministic, evt.newValue);
-		}
+        }
 
-		private void exportButtonClicked()
-		{
-			var definitions = new List<AssetBundleBuild>();
+        public static bool getDeterministic()
+        {
+            bool result = false;
 
-			// Build a list of definitions.
-			var bundles = AssetDatabase.GetAllAssetBundleNames();
-			foreach (var bundle in bundles)
-			{
-				Debug.Log(string.Format("Indexing bundle {0}", bundle));
-				var ab = new AssetBundleBuild();
-				ab.assetBundleName = $"{_pathElement.value.Replace("${bundleName}", bundle)}";
-				ab.assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(bundle);
-				definitions.Add(ab);
-			}
+            {
+                string cmd = null;
+                var args = System.Environment.GetCommandLineArgs();
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i].ToLower() == $"-{KeyDeterministic}")
+                    {
+                        if ((i + 1) < args.Length)
+                        {
+                            cmd = args[i + 1]; break;
+                        }
+                        else
+                        {
+                            Debug.LogError("Ignoring invalid command line option.");
+                            break;
+                        }
+                    }
+                }
 
-			// Build the asset bundles.
-			Debug.Log("Building Asset Bundles...");
+                if (bool.TryParse(cmd, out result))
+                {
+                    return result;
+                }
+            }
 
-			BuildAssetBundleOptions opts = BuildAssetBundleOptions.AssetBundleStripUnityVersion;
-			switch (_optCompression.value)
-			{
-				case "Uncompressed":
-					opts |= BuildAssetBundleOptions.UncompressedAssetBundle;
-					break;
-				case "Chunked":
-					opts |= BuildAssetBundleOptions.ChunkBasedCompression;
-					break;
-				case "Compressed":
-					break;
-			}
-			if (_optDeterministic.value)
-				opts |= BuildAssetBundleOptions.DeterministicAssetBundle;
+            {
+                string env = Environment.GetEnvironmentVariable(KeyDeterministic);
+                if (bool.TryParse(env, out result))
+                {
+                    return result;
+                }
+            }
 
-			BuildPipeline.BuildAssetBundles(
-				Application.dataPath, definitions.ToArray(), opts, BuildTarget.StandaloneWindows);
-		}
+            if (EditorPrefs.HasKey(KeyDeterministic))
+            {
+                return EditorPrefs.GetBool(KeyDeterministic);
+            }
 
-		[MenuItem("Guardian/Bundler")]
-		public static void onMenuGuardianBundler()
-		{
-			Bundler wnd = GetWindow<Bundler>();
-			wnd.titleContent = new GUIContent("Bundler");
-		}
-	}
+            return false;
+        }
+
+        public static void build()
+        {
+            string exportPath = getExportPath();
+            string compression = getCompressionType();
+            bool deterministic = getDeterministic();
+
+            var definitions = new List<AssetBundleBuild>();
+
+            // Build a list of definitions.
+            var bundles = AssetDatabase.GetAllAssetBundleNames();
+            foreach (var bundle in bundles)
+            {
+                Debug.Log(string.Format("Indexing bundle {0}", bundle));
+                var ab = new AssetBundleBuild();
+                ab.assetBundleName = $"{exportPath.Replace("${bundleName}", bundle)}";
+                ab.assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(bundle);
+                definitions.Add(ab);
+            }
+
+            // Build the asset bundles.
+            Debug.Log("Building Asset Bundles...");
+
+            BuildAssetBundleOptions opts = BuildAssetBundleOptions.AssetBundleStripUnityVersion;
+            switch (compression.ToLower())
+            {
+                case "uncompressed":
+                    opts |= BuildAssetBundleOptions.UncompressedAssetBundle;
+                    break;
+                default:
+                case "chunked":
+                    opts |= BuildAssetBundleOptions.ChunkBasedCompression;
+                    break;
+                case "compressed":
+                    break;
+            }
+            if (deterministic)
+                opts |= BuildAssetBundleOptions.DeterministicAssetBundle;
+
+            BuildPipeline.BuildAssetBundles(
+                Application.dataPath, definitions.ToArray(), opts, EditorUserBuildSettings.activeBuildTarget);
+        }
+
+    }
 }
