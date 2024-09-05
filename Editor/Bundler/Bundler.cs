@@ -180,13 +180,15 @@ namespace com.Xaymar.Modrian
                     opts |= BuildAssetBundleOptions.UncompressedAssetBundle;
                     break;
                 default:
+#if UNITY_5_3_OR_NEWER // ChunkBasedCompression did not appear until 5.3
                 case "chunked":
                     opts |= BuildAssetBundleOptions.ChunkBasedCompression;
                     break;
+#endif
                 case "compressed":
                     break;
             }
-#if (! UNITY_5_OR_NEWER)
+#if (! UNITY_2022_1_OR_NEWER)
             if (getDeterministic())
                 opts |= BuildAssetBundleOptions.DeterministicAssetBundle;
 #endif

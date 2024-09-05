@@ -67,7 +67,11 @@ namespace com.Xaymar.Modrian
             // Reload stored options.
             _pathElement.value = Bundler.getExportPath();
             _optCompression.value = Bundler.getCompressionType();
+#if UNITY_2022_1_OR_NEWER
+            _optDeterministic.visible = false; // This option no longer exists in this version of Unity and newer.
+#else
             _optDeterministic.value = Bundler.getDeterministic();
+#endif
         }
 
         private void geometryChanged(GeometryChangedEvent evt)

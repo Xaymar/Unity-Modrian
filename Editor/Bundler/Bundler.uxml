@@ -1,12 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <ui:VisualElement name="root" style="min-height: 110px; min-width: 300px; padding-left: 0; padding-right: 0; padding-top: 5px; padding-bottom: 5px;">
         <ui:VisualElement name="exportGroup" style="flex-direction: row; flex-shrink: 0;">
-            <ui:TextField label="Export Path" name="path" value="" text="" style="flex-grow: 1; min-width: 50px; width: 50px;" />
-            <ui:Button text="..." display-tooltip-when-elided="true" name="pathButton" style="" />
+            <ui:TextField label="Export Path" name="path" style="flex-grow: 1; min-width: 50px; width: 50px;" />
+            <ui:Button text="..." display-tooltip-when-elided="true" name="pathButton" />
         </ui:VisualElement>
         <ui:GroupBox text="&lt;b&gt;Options&lt;/b&gt;" name="optionsGroup">
-            <ui:DropdownField label="Compression" index="1" choices="Uncompressed,Chunked,Compressed" name="optCompression" />
-            <ui:Toggle label="Deterministic" value="false" name="optDeterministic" tooltip="Store assets by Hash instead of their Name." />
+            <ui:DropdownField label="Compression" index="1" choices="Uncompressed,Chunked,Compressed" name="optCompression" tooltip="What compression type do you want this bundle to have?&#10;- &quot;Uncompressed&quot;, as the name implies, stores objects as-is without compression. This provides fast generation and load times, high compatibility with binary patching systems (like Steam), but also produces the largest bundles.&#10;- &quot;Compressed&quot; first generates the entire Asset Bundle then compresses it as one file, thus providing the smallest bundles. This removes any compatibility with binary patching systems (like Steam), takes long to generate, and requires that the entire bundle is decompressed before anything is loaded.&#10;- &quot;Chunked&quot; is a good middleground that uses LZ4s Chunk-based compression, enabling realtime decompression and seeking by sacrificing compression ratio slightly. It is mostly compatible with binary patching systems (like Steam), takes half as long to generate as &quot;Compressed&quot;, and can even be streamed over the network if required. Available from Unity version 5.3 and newer." />
+            <ui:Toggle label="Deterministic" value="true" name="optDeterministic" tooltip="Use deterministic hashes instead of names for the identifier of objects. This improves support for distribution systems like Steam, but increases the chances of a hash collision with many objects and is slower to load.&#10;&#10;Since Unity 2022.x this is the default behavior and can&apos;t be disabled." />
         </ui:GroupBox>
         <ui:Button text="Export" display-tooltip-when-elided="true" name="export" />
     </ui:VisualElement>
