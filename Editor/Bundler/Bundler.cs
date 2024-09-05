@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.Xaymar.Guardian
+namespace com.Xaymar.Modrian
 {
     public class Bundler
     {
-        public const string KeyExportPath = "com.Xaymar.Guardian.Bundler.Path";
-        public const string KeyCompression = "com.Xaymar.Guardian.Bundler.Compression";
-        public const string KeyDeterministic = "com.Xaymar.Guardian.Bundler.Deterministic";
+        public const string KeyExportPath = "com.Xaymar.Modrian.Bundler.Path";
+        public const string KeyCompression = "com.Xaymar.Modrian.Bundler.Compression";
+        public const string KeyDeterministic = "com.Xaymar.Modrian.Bundler.Deterministic";
 
         public static string getExportPath()
         {
@@ -156,13 +156,10 @@ namespace com.Xaymar.Guardian
 
         public static void build()
         {
-            string exportPath = getExportPath();
-            string compression = getCompressionType();
-            bool deterministic = getDeterministic();
-
             var definitions = new List<AssetBundleBuild>();
 
             // Build a list of definitions.
+            string exportPath = getExportPath();
             var bundles = AssetDatabase.GetAllAssetBundleNames();
             foreach (var bundle in bundles)
             {
@@ -177,7 +174,7 @@ namespace com.Xaymar.Guardian
             Debug.Log("Building Asset Bundles...");
 
             BuildAssetBundleOptions opts = BuildAssetBundleOptions.AssetBundleStripUnityVersion;
-            switch (compression.ToLower())
+            switch (getCompressionType().ToLower())
             {
                 case "uncompressed":
                     opts |= BuildAssetBundleOptions.UncompressedAssetBundle;
@@ -189,8 +186,10 @@ namespace com.Xaymar.Guardian
                 case "compressed":
                     break;
             }
-            if (deterministic)
+#if (! UNITY_5_OR_NEWER)
+            if (getDeterministic())
                 opts |= BuildAssetBundleOptions.DeterministicAssetBundle;
+#endif
 
             BuildPipeline.BuildAssetBundles(
                 Application.dataPath, definitions.ToArray(), opts, EditorUserBuildSettings.activeBuildTarget);

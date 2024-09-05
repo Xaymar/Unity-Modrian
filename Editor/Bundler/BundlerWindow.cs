@@ -4,17 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using com.Xaymar.Guardian;
+using com.Xaymar.Modrian;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEngine;
 
-namespace com.Xaymar.Guardian
+namespace com.Xaymar.Modrian
 {
     public class BundlerWindow : EditorWindow
     {
-        [MenuItem("Guardian/Bundler")]
-        public static void onMenuGuardianBundler()
+        [MenuItem("Modrian/Bundler")]
+        public static void onMenuModrianBundler()
         {
             BundlerWindow wnd = GetWindow<BundlerWindow>();
             wnd.titleContent = new GUIContent("Bundler");

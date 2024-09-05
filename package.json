@@ -1,10 +1,11 @@
 {
-	"name": "com.xaymar.guardian",
-	"displayName": "Guardian",
-	"version": "0.0.0",
-	"author": "Michael Fabian 'Xaymar' Dirks <info@xaymar.com>",
-	"changelogUrl": "https://github.com/Xaymar/UnityGuardian/commits/root/",
-	"documentationUrl": "https://github.com/Xaymar/UnityGuardian/wiki/",
-	"license": "BSD-3-Clause",
-	"licensesUrl": "https://github.com/Xaymar/UnityGuardian/blob/root/LICENSE.adoc"
+  "name": "com.xaymar.modrian",
+  "displayName": "Modrian",
+  "version": "1.0.0",
+  "author": "Michael Fabian 'Xaymar' Dirks <info@xaymar.com>",
+  "changelogUrl": "https://github.com/Xaymar/Unity-Modrian/commits/root/",
+  "documentationUrl": "https://github.com/Xaymar/Unity-Modrian/wiki/",
+  "license": "BSD-3-Clause",
+  "licensesUrl": "https://github.com/Xaymar/Unity-Modrian/blob/root/LICENSE.adoc",
+  "description": "A simple modding toolkit for Unity with BepInEx."
 }
